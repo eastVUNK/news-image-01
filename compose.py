@@ -38,10 +38,11 @@ PANELS = [
 ]
 
 TICKER = [
-    "ALSO: MICROSOFT OUTAGE HITS OUTLOOK & TEAMS WORLDWIDE  \u2022  "
-    "ISRAELI STRIKE ON GAZA HOSPITAL KILLS 6",
-    "IEA FORECASTS Q4 OIL SURPLUS  \u2022  CHINA'S UNANNOUNCED PACIFIC "
-    "DRILLS  \u2022  GOOGLE UNVEILS GEMINI 4",
+    # One story per line: never split a story across lines (Stage 3 fix).
+    "ALSO: MICROSOFT OUTAGE HITS OUTLOOK & TEAMS WORLDWIDE",
+    "ISRAELI STRIKE ON GAZA HOSPITAL, 6 KILLED  \u2022  "
+    "IEA FORECASTS Q4 OIL SURPLUS",
+    "CHINA'S UNANNOUNCED PACIFIC DRILLS  \u2022  GOOGLE UNVEILS GEMINI 4",
 ]
 
 
@@ -135,11 +136,13 @@ def main():
     draw.rectangle([0, ty, W, ty + 3], fill=(214, 69, 69))
     y = ty + 14
     for text in TICKER:
-        f, lines = wrap(draw, text, FONT_REG, 24, W - 32, 2)
+        # max_lines=1: each story stays on its own line, font shrinks
+        # instead of wrapping mid-story (Stage 3 fix).
+        f, lines = wrap(draw, text, FONT_REG, 24, W - 32, 1)
         for ln in lines:
             lw = draw.textlength(ln, font=f)
             draw.text(((W - lw) / 2, y), ln, font=f, fill=WHITE)
-            y += f.size + 8
+            y += f.size + 10
 
     out = os.path.join(ASSETS, "entry.png")
     canvas.save(out, "PNG", optimize=True)
